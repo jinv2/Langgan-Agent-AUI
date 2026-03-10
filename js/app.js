@@ -24,6 +24,7 @@ window.sendPrompt = function(text) {
     if(inputField) {
         inputField.value = text;
         handleInput();
+        if(window.closeSidebarIfMobile) window.closeSidebarIfMobile();
     }
 }
 
@@ -284,6 +285,7 @@ window.closeModal = function() {
 };
 
 async function openArticle(articleId) {
+    if(window.closeSidebarIfMobile) window.closeSidebarIfMobile();
     openModal(`<div style="text-align:center; padding: 50px; color: var(--accent-jade);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p style="margin-top:15px">正在从知识图谱深海提取...</p></div>`);
     try {
         const response = await fetch(`/api/article?id=${articleId}`);
@@ -326,6 +328,7 @@ window.openNotificationModal = function() {
 };
 
 window.openAPISettings = function() {
+    if(window.closeSidebarIfMobile) window.closeSidebarIfMobile();
     const currentModel = localStorage.getItem('langgan_model') || 'gpt-5-4';
     const currentKey = localStorage.getItem('langgan_apikey') || '';
     
@@ -391,5 +394,14 @@ window.toggleSidebar = function() {
     const sidebar = document.querySelector('.aui-sidebar');
     if(sidebar) {
         sidebar.classList.toggle('active');
+    }
+};
+
+window.closeSidebarIfMobile = function() {
+    if (window.innerWidth <= 768) {
+        const sidebar = document.querySelector('.aui-sidebar');
+        if(sidebar && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
     }
 };
