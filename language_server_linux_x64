@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# ========= 配置区域：请根据你的实际情况修改 =========
+# 1. graftcp 的目录，就是刚才编译的地方
+GRAFTCP_DIR="$HOME/graftcp-0.7.1"
+# 2. 你的 SOCKS5 代理地址 (端口就是 10808)
+PROXY_ADDR="127.0.0.1:10808"
+# =================================================
+
+# 自动启动 graftcp-local (监听在 2233 端口)
+if ! pgrep -f "$GRAFTCP_DIR/local/graftcp-local" > /dev/null; then
+  nohup "$GRAFTCP_DIR/local/graftcp-local" \
+    -socks5 "$PROXY_ADDR" \
+    -listen "127.0.0.1:2233" \
+    -select_proxy_mode "only_socks5" > /dev/null 2>&1 &
+  sleep 0.5
+fi
+
+# 给 Go 程序加点环境变量防坑
+export GODEBUG=netdns=cgo,http2client=0
+
+# 用 graftcp 启动真正的程序
+exec "$GRAFTCP_DIR/graftcp" -a 127.0.0.1 -p 2233 "$0.bak" "$@"

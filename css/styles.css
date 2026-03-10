@@ -1,0 +1,307 @@
+/* =========================================
+   琅玕资讯智能体 (Langgan Information Agent)
+   2026 March Top-tier AI Design System (AUI)
+========================================= */
+
+:root {
+    --bg-dark: #000000;
+    --bg-panel: rgba(0, 0, 0, 0.4); 
+    --bg-panel-border: rgba(255, 0, 60, 0.2);
+    
+    --accent-jade: #ff003c;      /* Cyber Neon Red */
+    --accent-jade-glow: rgba(255, 0, 60, 0.6);
+    --accent-gold: #ff3300;      /* Electric Crimson/Orange */
+    --accent-blue: #8b0000;      /* Deep Blood Red */
+    
+    --text-primary: #ffffff;
+    --text-secondary: #ffb3b3;   /* Light pink-red tint */
+    --text-muted: #804040;
+    
+    --font-heading: 'Noto Serif SC', 'Inter', sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    
+    --glass-blur: blur(25px);
+    --shadow-neon: 0 0 35px var(--accent-jade-glow);
+    --transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    overflow-y: hidden; /* App container handles scrolling */
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Background Effects */
+#particle-bg {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+    background-image: url('../langgan_bg.webp');
+    background-size: cover; background-position: center;
+    background-color: rgba(0, 0, 0, 0.2); /* Reduced tint to let image shine */
+    background-blend-mode: darken; /* Allows the Mountain/Sea image to be very visible */
+    pointer-events: none;
+}
+#particle-bg::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    /* Soft glowing vignettes rather than covering the whole image */
+    background: radial-gradient(circle at 10% 20%, rgba(255, 0, 60, 0.1), transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(200, 0, 20, 0.05), transparent 35%);
+    pointer-events: none;
+}
+
+/* Glassmorphism */
+.glass-panel {
+    background: rgba(0, 0, 0, 0.65); /* Made panels slightly darker so white text remains perfectly readable against the bright background */
+    backdrop-filter: blur(15px); /* Reduced blur so the background isn't completely lost behind panels */
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--bg-panel-border);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ==================
+   AUI SKELETON
+================== */
+.aui-sidebar {
+    width: 280px;
+    height: calc(100vh - 40px);
+    margin: 20px 0 20px 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px;
+    border-right: 1px solid var(--bg-panel-border);
+    flex-shrink: 0;
+}
+
+.brand {
+    display: flex; align-items: center; gap: 15px; margin-bottom: 40px;
+}
+.brand .logo {
+    width: 45px; height: 45px; border-radius: 50%;
+    box-shadow: 0 0 15px var(--accent-jade);
+    border: 2px solid var(--accent-jade);
+}
+
+.agent-status-panel { margin-bottom: 40px; }
+.status-indicator {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: var(--text-secondary);
+}
+.pulse-dot {
+    width: 8px; height: 8px; background: var(--accent-jade); border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-jade);
+    animation: pulse 2s infinite; display: inline-block;
+}
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.aui-prompts { display: flex; flex-direction: column; gap: 10px; }
+.prompt-btn {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,60,0.3);
+    color: var(--text-primary); text-align: left; padding: 10px 15px;
+    border-radius: 8px; cursor: pointer; transition: var(--transition);
+    font-size: 0.85rem; font-family: var(--font-body);
+}
+.prompt-btn:hover {
+    background: rgba(255,0,60,0.1); border-color: var(--accent-jade);
+    transform: translateX(5px); box-shadow: 0 0 10px rgba(255,0,60,0.2);
+}
+
+/* Main Area */
+.aui-main {
+    flex: 1; display: flex; flex-direction: column;
+    height: 100vh; position: relative; padding: 20px;
+}
+
+.aui-header {
+    height: 60px; display: flex; justify-content: space-between; align-items: center;
+    padding: 0 25px; margin-bottom: 15px; flex-shrink: 0;
+}
+
+.btn-icon {
+    background: transparent; border: none; color: var(--text-primary);
+    font-size: 18px; transition: var(--transition);
+}
+.btn-icon:hover { color: var(--accent-jade); text-shadow: var(--shadow-neon); }
+
+/* Chat Stream */
+.chat-stream {
+    flex: 1; overflow-y: auto; padding: 20px 20px 100px 20px;
+    display: flex; flex-direction: column; gap: 20px;
+    scroll-behavior: smooth;
+}
+.chat-stream::-webkit-scrollbar { width: 6px; }
+.chat-stream::-webkit-scrollbar-track { background: transparent; }
+.chat-stream::-webkit-scrollbar-thumb { background: rgba(255, 0, 60, 0.3); border-radius: 3px; }
+
+/* Messages */
+.message {
+    display: flex; gap: 15px; max-width: 85%; animation: fadeIn 0.4s ease-out forwards;
+}
+.message.user {
+    align-self: flex-end; flex-direction: row-reverse;
+}
+
+.message .avatar img {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+.message.agent .avatar img {
+    border-color: var(--accent-jade); box-shadow: 0 0 10px rgba(255,0,60,0.3);
+}
+
+.msg-content {
+    padding: 15px 20px; font-size: 0.95rem; line-height: 1.7;
+}
+.message.user .msg-content {
+    border-right: 3px solid var(--accent-gold);
+    background: rgba(255, 51, 0, 0.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stream Log Box */
+.log-box {
+    background: rgba(0,0,0,0.6); padding: 15px; border-radius: 6px;
+    font-family: 'Courier New', Courier, monospace; font-size: 0.85em;
+    color: var(--text-secondary); border-left: 2px dashed var(--accent-jade);
+    margin-top: 10px; margin-bottom: 10px;
+}
+
+/* Input Area */
+.input-area {
+    position: absolute; bottom: 20px; left: 20px; right: 20px;
+    padding: 15px 20px; border-radius: 20px;
+}
+.input-wrapper {
+    display: flex; gap: 15px; align-items: center;
+}
+.input-wrapper input {
+    flex: 1; background: transparent; border: none; color: var(--text-primary);
+    font-size: 1rem; padding: 10px; outline: none; font-family: var(--font-body);
+}
+.input-wrapper input::placeholder { color: rgba(255,255,255,0.3); }
+
+.send-btn {
+    width: 45px; height: 45px; border-radius: 50%; border: none;
+    background: var(--accent-jade); color: #000; font-size: 1.1rem;
+    cursor: pointer; transition: var(--transition); display:flex; justify-content:center; align-items:center;
+}
+.send-btn:hover {
+    box-shadow: 0 0 20px var(--accent-jade); transform: scale(1.05);
+}
+
+/* Dynamic Cards injected into chat */
+.aiga-card {
+    margin-top: 15px; width: 100%; min-width: 400px;
+}
+.card-title {
+    color: var(--accent-jade); font-size: 1.1rem; margin-bottom: 10px; display:flex; align-items:center; gap:8px;
+}
+.news-item {
+    padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.3s;
+}
+.news-item:hover { color: var(--accent-jade); padding-left: 10px; }
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-jade) 0%, #aa0022 100%);
+    color: #fff; border: none; padding: 10px 24px; border-radius: 6px;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition);
+}
+.btn-primary:hover {
+    box-shadow: var(--shadow-neon); transform: translateY(-2px);
+}
+
+/* Typing indicator */
+.typing { display: flex; gap: 5px; padding: 10px; }
+.typing span {
+    width: 6px; height: 6px; background: var(--accent-jade); border-radius: 50%;
+    animation: typing 1s infinite alternate;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing { from { opacity: 0.3; transform: translateY(0); } to { opacity: 1; transform: translateY(-5px); } }
+
+/* =========================================
+   MOBILE RESPONSIVENESS (AUI)
+========================================= */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+        overflow-x: hidden;
+    }
+    .aui-sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        bottom: 0;
+        width: 85%;
+        max-width: 320px;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+        border-right: 1px solid var(--accent-jade);
+        background: rgba(0, 0, 0, 0.95); /* Opaque for readability */
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 2000;
+        transition: left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        padding-top: 20px;
+    }
+    .aui-sidebar.active {
+        left: 0;
+    }
+    .aui-main {
+        padding: 10px;
+        width: 100vw;
+    }
+    .aui-header {
+        padding: 0 15px;
+        margin-bottom: 10px;
+    }
+    .header-title span:last-child {
+        font-size: 0.9rem; /* Smaller title on mobile */
+    }
+    .hamburger-btn {
+        display: block !important; /* Show hamburger on mobile */
+    }
+    .message {
+        max-width: 95%; /* Messages take more width on phone */
+    }
+    .input-area {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        padding: 10px;
+    }
+    .input-wrapper input {
+        font-size: 0.9rem;
+    }
+    .send-btn {
+        width: 40px; height: 40px;
+    }
+    .aiga-card {
+        min-width: 100%; /* Force cards to shrink on mobile */
+    }
+    .modal-content {
+        width: 95% !important;
+        padding: 20px !important;
+    }
+}
