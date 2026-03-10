@@ -83,7 +83,12 @@ body {
     padding: 25px 20px;
     border-right: 1px solid var(--bg-panel-border);
     flex-shrink: 0;
+    overflow-y: auto;
 }
+
+.aui-sidebar::-webkit-scrollbar { width: 4px; }
+.aui-sidebar::-webkit-scrollbar-track { background: transparent; }
+.aui-sidebar::-webkit-scrollbar-thumb { background: rgba(255, 0, 60, 0.2); border-radius: 3px; }
 
 .brand {
     display: flex; align-items: center; gap: 15px; margin-bottom: 40px;

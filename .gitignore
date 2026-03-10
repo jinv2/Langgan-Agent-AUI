@@ -5,3 +5,6 @@ local/cmd/mgraftcp/mgraftcp
 *.o
 *.d
 *.a
+
+# Local Netlify folder
+.netlify
